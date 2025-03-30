@@ -3,7 +3,8 @@ var cors = require('cors');
 require('dotenv').config()
 const multer = require('multer')
 const path = require('path')
-const fs = require('fs')
+const fs = require('fs');
+const { error } = require('console');
 
 var app = express();
 
@@ -32,13 +33,16 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-app.post('/api/fileanalyse', upload.array('upfile'), async (req, res)=>{
-  const file = req.file
-  if (file){
-    res.status(200).json({"name":file.originalname, "type":file.mimetype, "size":file.size})
+app.post('/api/fileanalyse', upload.single('upfile'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded" });
   }
-  res.send("error")
-})
+  res.json({
+    name: req.file.originalname,
+    type: req.file.mimetype,
+    size: req.file.size
+  });
+});
 
 const port = process.env.PORT || 3000;
 app.listen(port, function () {
