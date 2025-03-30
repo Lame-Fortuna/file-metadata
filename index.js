@@ -33,7 +33,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post('/api/fileanalyse', upload.array('upfile'), async (req, res)=>{
-  if (req.file){
+  const file = req.file
+  if (file){
     res.status(200).json({"name":file.originalname, "type":file.mimetype, "size":file.size})
   }
   res.send("error")
