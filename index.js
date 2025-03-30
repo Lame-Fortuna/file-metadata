@@ -33,11 +33,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post('/api/fileanalyse', upload.array('upfile'), async (req, res)=>{
-  let info = []
-  req.files.forEach(file =>{
-    info.push({"name":file.originalname, "type":file.mimetype, "size":file.size})
-  })
-  res.status(200).json(info)
+  if (req.file){
+    res.status(200).json({"name":file.originalname, "type":file.mimetype, "size":file.size})
+  }
+  res.send("error")
 })
 
 const port = process.env.PORT || 3000;
